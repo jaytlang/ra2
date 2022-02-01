@@ -172,6 +172,24 @@ func (s *sbp) matchLonerOnlyTeams() map[node][]node {
 	return m
 }
 
+func (s *sbp) augmentMatching(m *map[node][]node, maxSz int) {
+	l := s.getAllRemaining()
+	for _, n := range l {
+		for t1, tr := range *m {
+			if len(tr) <= (maxSz - 1) {
+				s.claim(n)
+				(*m)[n] = append(tr, t1)
+				(*m)[t1] = append(tr, n)
+				for _, t2 := range tr {
+					(*m)[t2] = append((*m)[t2], n)
+				}
+				break
+			}
+		}
+	}
+
+}
+
 func (s *sbp) greedyMatching() map[node][]node {
 	m := s.matchThrees()
 	for k, v := range s.matchPairsAndLoners() {
@@ -184,35 +202,8 @@ func (s *sbp) greedyMatching() map[node][]node {
 		}
 	}
 
-	l := s.getAllRemaining()
-	for _, n := range l {
-		for t1, tr := range m {
-			if len(tr) == 2 {
-				s.claim(n)
-				m[n] = append(tr, t1)
-				m[t1] = append(tr, n)
-				for _, t2 := range tr {
-					m[t2] = append(m[t2], n)
-				}
-				break
-			}
-		}
-	}
-
-	l = s.getAllRemaining()
-	for _, n := range l {
-		for t1, tr := range m {
-			if len(tr) == 3 {
-				s.claim(n)
-				m[n] = append(tr, t1)
-				m[t1] = append(tr, n)
-				for _, t2 := range tr {
-					m[t2] = append(m[t2], n)
-				}
-				break
-			}
-		}
-	}
+	s.augmentMatching(&m, 3)
+	s.augmentMatching(&m, 4)
 
 	return m
 }

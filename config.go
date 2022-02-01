@@ -18,11 +18,11 @@ const (
 	tr12   st = "TR 1-2pm ET"
 	tr23   st = "TR 2-3pm ET"
 
-	f12 st = "F 12-1pm ET"
+	f12 st = "F 1-2pm ET"
 	f23 st = "F 2-3pm ET"
 )
 
-var rbs = map[int]section{
+var rbs = map[int]*section{
 	1:  {isTutorial: false, time: tr1011, instructor: "Karen Sollins"},
 	2:  {isTutorial: false, time: tr1011, instructor: "Howard Shrobe"},
 	3:  {isTutorial: false, time: tr1011, instructor: "Henry Corrigan-Gibbs"},
@@ -41,7 +41,7 @@ var rbs = map[int]section{
 	16: {isTutorial: false, time: tr121, instructor: "Mohammad Alizadeh"},
 }
 
-var tbs = map[int]section{
+var tbs = map[int]*section{
 	2:  {isTutorial: true, time: f12, instructor: "Laura McKee"},
 	3:  {isTutorial: true, time: f12, instructor: "Amy Carleton"},
 	4:  {isTutorial: true, time: f23, instructor: "Keith Clavin"},

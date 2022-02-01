@@ -10,9 +10,9 @@ type section struct {
 
 func (sec section) String() string {
 	if sec.isTutorial {
-		return fmt.Sprintf("Tutorial %s: taught by %s\n", sec.time, sec.instructor)
+		return fmt.Sprintf("Tutorial %s: taught by %s", sec.time, sec.instructor)
 	} else {
-		return fmt.Sprintf("Recitation %s: taught by %s\n", sec.time, sec.instructor)
+		return fmt.Sprintf("Recitation %s: taught by %s", sec.time, sec.instructor)
 	}
 }
 

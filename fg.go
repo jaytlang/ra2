@@ -1,7 +1,5 @@
 package main
 
-type node interface{}
-
 /* MARK: Queueing for BFS */
 
 type q struct {

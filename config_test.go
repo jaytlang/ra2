@@ -6,5 +6,5 @@ import (
 )
 
 func TestLegalRTGen(t *testing.T) {
-	fmt.Println(legalRTPairs())
+	fmt.Println(legalRTSectPairs())
 }

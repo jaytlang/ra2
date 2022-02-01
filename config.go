@@ -79,7 +79,7 @@ func (sec section) String() string {
 
 var rbs = map[int]section{
 	1:  {isTutorial: false, time: tr1011, instructor: "Karen Sollins"},
-	2:  {isTutorial: false, instructor: "Howard Shrobe"},
+	2:  {isTutorial: false, time: tr1011, instructor: "Howard Shrobe"},
 	3:  {isTutorial: false, time: tr1011, instructor: "Henry Corrigan-Gibbs"},
 	4:  {isTutorial: false, time: tr1112, instructor: "Karen Sollins"},
 	5:  {isTutorial: false, time: tr1112, instructor: "Howard Shrobe"},
@@ -126,7 +126,7 @@ var r2t = map[string][]string{
 	"Adam Belay":           {"Michael Trice"},
 }
 
-func findSnums(inst string, rec bool) []int {
+func findSectNs(inst string, rec bool) []int {
 	m := tbs
 	if rec {
 		m = rbs
@@ -142,13 +142,13 @@ func findSnums(inst string, rec bool) []int {
 	return sns
 }
 
-func legalRTPairs() [][2]int {
+func legalRTSectPairs() [][2]int {
 	pairs := make([][2]int, 0)
 
 	for ri, tis := range r2t {
 		for _, ti := range tis {
-			rsns := findSnums(ri, true)
-			tsns := findSnums(ti, false)
+			rsns := findSectNs(ri, true)
+			tsns := findSectNs(ti, false)
 			for _, rsn := range rsns {
 				for _, tsn := range tsns {
 					pairs = append(pairs, [2]int{rsn, tsn})

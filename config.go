@@ -13,7 +13,7 @@ type st string
 
 const (
 	tr1011 st = "TR 10-11am ET"
-	tr1112 st = "TR 11-12pm ET"
+	tr1112 st = "TR 11am-12pm ET"
 	tr121  st = "TR 12-1pm ET"
 	tr12   st = "TR 1-2pm ET"
 	tr23   st = "TR 2-3pm ET"
@@ -21,6 +21,8 @@ const (
 	f12 st = "F 1-2pm ET"
 	f23 st = "F 2-3pm ET"
 )
+
+const allowedTutOvf = 3
 
 var rbs = map[int]*section{
 	1:  {isTutorial: false, time: tr1011, instructor: "Karen Sollins"},

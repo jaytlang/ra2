@@ -26,6 +26,15 @@ func (s student) String() string {
 	return str
 }
 
+func (s student) open(t st) bool {
+	for _, st := range s.avail {
+		if st == t {
+			return true
+		}
+	}
+	return false
+}
+
 func newStudentIso(line []string) *student {
 	s := student{
 		name:  csvlName(line),

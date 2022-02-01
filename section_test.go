@@ -6,5 +6,8 @@ import (
 )
 
 func TestLegalRTGen(t *testing.T) {
-	fmt.Println(legalRTSectPairs())
+	lrts := legalRTSectPairs()
+	for _, lrt := range lrts {
+		fmt.Printf("%s -> %s\n", rbs[lrt[0]], tbs[lrt[1]])
+	}
 }

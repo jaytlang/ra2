@@ -32,12 +32,15 @@ func csvlEmail(l []string) string {
 }
 
 func csvlAvail(l []string) []st {
+	tavailnq := strings.Replace(l[tavail], `"`, "", -1)
 	availnq := strings.Replace(l[ravail], `"`, "", -1)
-	availl := strings.Split(availnq, ", ")
+
+	availl := append(strings.Split(availnq, ", "), strings.Split(tavailnq, ", ")...)
 	avail := make([]st, 0)
 	for _, a := range availl {
 		avail = append(avail, st(a))
 	}
+
 	return avail
 }
 

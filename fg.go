@@ -119,10 +119,13 @@ func (g *fg) findPF(s, e node, t pt) ([]node, int) {
 }
 
 func (g *fg) maximize(src, sink node) int {
-	rvp, f := g.findPF(src, sink, resid)
 	total := 0
 
-	for ; f > 0; rvp, f = g.findPF(src, sink, resid) {
+	for {
+		rvp, f := g.findPF(src, sink, resid)
+		if f <= 0 {
+			break
+		}
 		total += f
 		n := sink
 		for n != src {

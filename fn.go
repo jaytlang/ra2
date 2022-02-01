@@ -38,7 +38,7 @@ func (f fn) String() string {
 	}
 }
 
-func mkStudentFns() ([]fn, error) {
+func makeStudentFns() ([]fn, error) {
 	f, err := os.Open(csvFile)
 
 	if err != nil {

@@ -57,9 +57,12 @@ func (st student) String() string {
 	s := fmt.Sprintf("%s (%s):\n\tavailable %v\n\twants rs %v\n\twants tut %v\n",
 		st.name, st.email, st.avail, st.rp, st.tp)
 	s += "\tWants partners: "
-	for _, dpfav := range st.dpfavs {
-		s += fmt.Sprintf("\n\t\t%s, ", dpfav.email)
-	}
+	fmt.Println("\t\t", st.dpfavs)
+	/*
+		for _, dpfav := range st.dpfavs {
+			s += fmt.Sprintf("\n\t\t%s, ", dpfav.email)
+		}
+	*/
 	return s
 }
 

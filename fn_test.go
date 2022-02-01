@@ -6,7 +6,7 @@ import (
 )
 
 func TestStudentFns(t *testing.T) {
-	fns, err := mkStudentFns()
+	fns, err := makeStudentFns()
 	if err != nil {
 		t.Error(err)
 	}

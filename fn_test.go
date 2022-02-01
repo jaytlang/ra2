@@ -11,6 +11,9 @@ func TestStudentFns(t *testing.T) {
 		t.Error(err)
 	}
 	for _, f := range fns {
-		fmt.Println(f)
+		if f.st.email == "alvvchan@mit.edu" {
+			fmt.Println(f)
+		}
 	}
+	fmt.Println("Total students: ", len(fns))
 }

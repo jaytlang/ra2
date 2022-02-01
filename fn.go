@@ -38,6 +38,36 @@ func (f fn) String() string {
 	}
 }
 
+func emailFromKerb(kerb string) string {
+	return strings.ToLower(kerb) + "@mit.edu"
+}
+
+func makeStudentNP(line []string) student {
+	s := student{
+		name:  line[name],
+		email: emailFromKerb(line[kerb]),
+		avail: make([]st, 0),
+		rp:    []st{st(line[rpref1]), st(line[rpref2])},
+		tp:    st(line[tpref]),
+	}
+
+	availnq := strings.Replace(line[ravail], `"`, "", -1)
+	availl := strings.Split(availnq, ", ")
+	for _, a := range availl {
+		s.avail = append(s.avail, st(a))
+	}
+
+	return s
+}
+
+func addStudentPrefs(s *student, email2fn map[string]fn, email2dpfavs map[string][]string) {
+	for _, dpfav := range email2dpfavs[s.email] {
+		if fn, ok := email2fn[dpfav]; ok {
+			s.dpfavs = append(s.dpfavs, fn.st)
+		}
+	}
+}
+
 func makeStudentFns() ([]fn, error) {
 	f, err := os.Open(csvFile)
 
@@ -52,59 +82,29 @@ func makeStudentFns() ([]fn, error) {
 		return nil, fmt.Errorf("failed to read config-provided csv %s: %v", csvFile, err)
 	}
 
-	e2fn := make(map[string]fn)
-	e2dpe := make(map[string][]string)
+	email2fn := make(map[string]fn)
+	email2dpfavs := make(map[string][]string)
 
 	for i, line := range lines {
 		if i == 0 {
 			continue
 		}
+		s := makeStudentNP(line)
 
-		s := &student{
-			name:  line[name],
-			email: strings.ToLower(line[kerb]) + "@mit.edu",
-			avail: make([]st, 0),
-			rp:    []st{st(line[rpref1]), st(line[rpref2])},
-			tp:    st(line[tpref]),
-		}
-
-		avail := strings.Replace(line[ravail], `"`, "", -1)
-		availl := strings.Split(avail, ", ")
-		for _, a := range availl {
-			s.avail = append(s.avail, st(a))
-		}
-
-		e2fn[s.email] = fn{
+		fn := fn{
 			t:  kid,
-			st: s,
+			st: &s,
 		}
 
-		sdpk1 := strings.ToLower(line[dpk1])
-		sdpk2 := strings.ToLower(line[dpk2])
-		e2dpe[s.email] = make([]string, 0)
-		if sdpk1 != "" {
-			e2dpe[s.email] = append(e2dpe[s.email], sdpk1)
-		}
-		if sdpk2 != "" {
-			e2dpe[s.email] = append(e2dpe[s.email], sdpk2)
-		}
-	}
-
-	for em, fn := range e2fn {
-		dpfavs := e2dpe[em]
-		for _, dpfav := range dpfavs {
-			if dpfav == em {
-				continue
-			}
-			fn.st.dpfavs = append(fn.st.dpfavs, e2fn[dpfav].st)
-		}
+		email2fn[s.email] = fn
+		email2dpfavs[s.email] = []string{emailFromKerb(line[dpk1]), emailFromKerb(line[dpk2])}
 	}
 
 	ret := make([]fn, 0)
-	for _, fn := range e2fn {
+	for _, fn := range email2fn {
+		addStudentPrefs(fn.st, email2fn, email2dpfavs)
 		ret = append(ret, fn)
 	}
 
 	return ret, nil
-	/* totally broken lol TODO */
 }

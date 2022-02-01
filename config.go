@@ -24,44 +24,8 @@ const (
 	f23 st = "F 2-3pm ET"
 )
 
-// CSV file format: invariant
-const (
-	timestamp = iota
-	email
-	kerb
-	name
-	ravail
-	rpref1
-	rpref2
-	tavail
-	tpref
-	dpk1
-	dpn1
-	dpk2
-	dpn2
-)
-
 var recitationTimes = []st{tr1011, tr1112, tr121, tr12, tr23}
 var tutorialTimes = []st{f12, f23}
-
-type student struct {
-	name   string
-	email  string
-	avail  []st
-	rp     []st
-	tp     st
-	dpfavs []*student
-}
-
-func (st student) String() string {
-	s := fmt.Sprintf("%s (%s):\n\tavailable %v\n\twants rs %v\n\twants tut %v\n",
-		st.name, st.email, st.avail, st.rp, st.tp)
-	s += "\tWants partners: "
-	for _, dpfav := range st.dpfavs {
-		s += fmt.Sprintf("\n\t\t%s, ", dpfav.email)
-	}
-	return s
-}
 
 type section struct {
 	isTutorial bool

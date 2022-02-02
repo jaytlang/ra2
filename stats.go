@@ -72,9 +72,12 @@ func (t *stats) rptTutEnrollment() {
 	}
 
 	fmt.Printf("Tutorial enrollment:\n")
+	total := 0
 	for tut, count := range tuts {
 		fmt.Printf("\t%s %s: %d\n", tut.instructor, tut.time, count)
+		total += count
 	}
+	fmt.Printf("Total tutorial enrollment: %d\n", total)
 }
 
 func (t *stats) rptSPerT() {

@@ -45,13 +45,13 @@ func (a *afg) prepFg() error {
 	a.fg = newFg(everyFn)
 
 	for _, sfn := range a.sfns {
-		a.fg.addBothCost(a.srcfn, sfn, 1)
+		a.fg.addCost(a.srcfn, sfn, 1)
 	}
 
 	for _, sfn := range a.sfns {
 		for _, rtfn := range a.rtfns {
 			if sfn.st.open(rtfn.rsec.time) && sfn.st.open(rtfn.tsec.time) {
-				a.fg.addBothCost(sfn, rtfn, 1)
+				a.fg.addCost(sfn, rtfn, 1)
 			}
 		}
 
@@ -60,14 +60,14 @@ func (a *afg) prepFg() error {
 	for _, rtfn := range a.rtfns {
 		for _, tfn := range a.tfns {
 			if rtfn.tsec == tfn.tsec {
-				a.fg.addBothCost(rtfn, tfn, int(^uint(0)>>1))
+				a.fg.addCost(rtfn, tfn, int(^uint(0)>>1))
 			}
 		}
 	}
 
 	tutSize := len(a.sfns)/len(a.tfns) + allowedTutOvf
 	for _, tfn := range a.tfns {
-		a.fg.addBothCost(tfn, a.sinkfn, tutSize)
+		a.fg.addCost(tfn, a.sinkfn, tutSize)
 	}
 
 	return nil
@@ -102,7 +102,6 @@ func (a *afg) export() ([]*fn, error) {
 			if f > 0 {
 				sfn.rsec = rtfn.rsec
 				sfn.tsec = rtfn.tsec
-				break
 			}
 		}
 	}

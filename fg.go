@@ -1,6 +1,8 @@
 package main
 
-import "github.com/yourbasic/graph"
+import (
+	"github.com/yourbasic/graph"
+)
 
 type fg struct {
 	tl map[*fn]int
@@ -28,8 +30,8 @@ func newFg(fns []*fn) *fg {
 	return &f
 }
 
-func (f *fg) addBothCost(fn1, fn2 *fn, cost int) {
-	f.g.AddBothCost(f.tl[fn1], f.tl[fn2], int64(cost))
+func (f *fg) addCost(fn1, fn2 *fn, cost int) {
+	f.g.AddCost(f.tl[fn1], f.tl[fn2], int64(cost))
 }
 
 func (f *fg) runMaxFlow(s, e *fn) *fgr {
@@ -52,7 +54,7 @@ func (f *fgr) flowAlong(s, e *fn) int {
 			res = int(c)
 			return true
 		}
-		return true
+		return false
 	})
 
 	return res

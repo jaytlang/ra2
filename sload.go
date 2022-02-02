@@ -73,7 +73,7 @@ func exportSfns(fns []*fn) error {
 		record = append(record, string(fn.tsec.time))
 
 		for _, st := range fn.team {
-			record = append(record, st.email)
+			record = append(record, st.st.email)
 		}
 		records = append(records, record)
 	}

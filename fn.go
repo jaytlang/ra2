@@ -16,7 +16,7 @@ type fn struct {
 	st   *student
 	rsec *section
 	tsec *section
-	team []*student
+	team []*fn
 }
 
 func (f fn) String() string {
@@ -30,7 +30,7 @@ func (f fn) String() string {
 		if f.team != nil {
 			s += "Team:"
 			for _, teammate := range f.team {
-				s += " " + teammate.email
+				s += " " + teammate.st.email
 			}
 			s += "\n"
 		}

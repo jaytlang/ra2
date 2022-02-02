@@ -1,8 +1,6 @@
 package main
 
-import (
-	"github.com/yourbasic/graph"
-)
+import "github.com/yourbasic/graph"
 
 type fg struct {
 	tl map[*fn]int

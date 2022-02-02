@@ -77,7 +77,6 @@ func (t *stats) rptTutEnrollment() {
 		fmt.Printf("\t%s %s: %d\n", tut.instructor, tut.time, count)
 		total += count
 	}
-	fmt.Printf("Total tutorial enrollment: %d\n", total)
 }
 
 func (t *stats) rptRecEnrollment() {
@@ -99,7 +98,7 @@ func (t *stats) rptRecEnrollment() {
 		total += count
 	}
 
-	fmt.Printf("Total enrollment by time:\n")
+	fmt.Printf("Total recitation enrollment by time:\n")
 	enrollmentByTime := map[st]int{}
 	for _, fn := range t.l {
 		enrollmentByTime[fn.rsec.time]++
@@ -144,7 +143,7 @@ func (t *stats) rptTeamSatisfaction() {
 
 		for _, fav := range favs {
 			for _, tm := range team {
-				if fav == tm {
+				if fav == tm.st {
 					got++
 				}
 			}

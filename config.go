@@ -5,7 +5,7 @@ package main
 // TODO: make super cool spreadsheet go getter with google apis
 // it's late, aint nobody got time for that
 
-var strategies = []strategy{&afg{}, &asbp{}, &stats{}}
+var strategies = []strategy{&afg{}, &asbp{}, &topt{}, &stats{}}
 
 var (
 	csvFile = "./data/s22.csv"

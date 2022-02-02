@@ -46,10 +46,7 @@ func (s *asbp) export() ([]*fn, error) {
 	res := make([]*fn, len(s.res))
 
 	for s, t := range s.res {
-		for _, os := range t {
-			s.team = append(s.team, os.st)
-		}
-
+		s.team = append(s.team, t...)
 		res[i] = s
 		i++
 	}

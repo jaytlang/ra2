@@ -17,16 +17,12 @@ type afg struct {
 
 /* MARK: preparation */
 
-func (a *afg) prepFns() error {
+func (a *afg) prepFns(sfns []*fn) error {
 	var err error
 
 	a.srcfn = &fn{t: src}
 	a.sinkfn = &fn{t: sink}
-
-	a.sfns, err = makeStudentFns()
-	if err != nil {
-		return err
-	}
+	a.sfns = sfns
 
 	a.rtfns, err = makeRTUFns()
 	if err != nil {
@@ -77,8 +73,8 @@ func (a *afg) prepFg() error {
 	return nil
 }
 
-func (a *afg) prepare(u []*fn) error {
-	err := a.prepFns()
+func (a *afg) prepare(sfns []*fn) error {
+	err := a.prepFns(sfns)
 	if err != nil {
 		return err
 	}

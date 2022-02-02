@@ -46,22 +46,6 @@ func (f fn) String() string {
 	}
 }
 
-func makeStudentFns() ([]*fn, error) {
-	s, err := newStudentsAll()
-	if err != nil {
-		return nil, err
-	}
-
-	fns := make([]*fn, len(s))
-	for i, ts := range s {
-		fns[i] = &fn{
-			t:  kid,
-			st: ts,
-		}
-	}
-	return fns, nil
-}
-
 func makeTutFns() ([]*fn, error) {
 	fns := make([]*fn, 0)
 	for _, tb := range ats {

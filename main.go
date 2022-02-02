@@ -1,7 +1,11 @@
 package main
 
 func main() {
-	l := make([]*fn, 0)
+	l, err := importSfns()
+	if err != nil {
+		panic(err)
+	}
+
 	for _, s := range strategies {
 		var err error
 		if err = s.prepare(l); err != nil {
@@ -15,7 +19,7 @@ func main() {
 			panic(err)
 		}
 	}
-	if err := exportFns(l); err != nil {
+	if err := exportSfns(l); err != nil {
 		panic(err)
 	}
 }

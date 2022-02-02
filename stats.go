@@ -169,6 +169,30 @@ func (t *stats) rptTeamSatisfaction() {
 	fmt.Printf("\t[Students with no team preferences: %d]\n", len(t.l)-pt)
 }
 
+func (t *stats) rptSubmissions() {
+	fmt.Printf("Number of submissions: %d\n", len(t.l))
+}
+
+func (t *stats) rptLargeTeams() {
+	lt3 := map[*student]bool{}
+	lt4 := map[*student]bool{}
+	lt5 := map[*student]bool{}
+
+	for _, fn := range t.l {
+		if len(fn.team) == 2 {
+			lt3[fn.st] = true
+		} else if len(fn.team) == 3 {
+			lt4[fn.st] = true
+		} else if len(fn.team) == 4 {
+			lt5[fn.st] = true
+		}
+	}
+
+	fmt.Printf("3-member teams: %d\n", len(lt3)/3)
+	fmt.Printf("4-member teams: %d\n", len(lt4)/4)
+	fmt.Printf("5-member teams: %d\n", len(lt5)/5)
+}
+
 func (t *stats) prepare(l []*fn) error {
 	t.l = l
 	return nil
@@ -185,7 +209,9 @@ func (t *stats) execute() error {
 	t.rptRecEnrollment()
 
 	t.rptTeamSatisfaction()
+	t.rptLargeTeams()
 
+	t.rptSubmissions()
 	return nil
 }
 

@@ -64,10 +64,7 @@ func (t *topt) prepare(l []*fn) error {
 }
 
 func (t *topt) execute() error {
-	swpd := make(map[*fn]bool)
-
 	for _, fn := range t.l {
-		swpd[fn] = true
 		for i, tm := range fn.team {
 			if i >= len(fn.team) {
 				continue
@@ -79,17 +76,12 @@ func (t *topt) execute() error {
 				for _, rplc := range t.l {
 					if t.teammates(fn, rplc) || fn == rplc {
 						continue
-					} else if swpd[rplc] {
-						continue
 					}
 
 					if t.mfvd(fn.st, rplc.st) && t.canSwap(tm, rplc) {
 						tm.rsec, rplc.rsec = rplc.rsec, tm.rsec
 						tm.tsec, rplc.tsec = rplc.tsec, tm.tsec
 						t.stb(tm, rplc)
-
-						swpd[rplc] = true
-						swpd[tm] = true
 					}
 				}
 			}

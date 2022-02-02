@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 func main() {
 	a := afg{}
 	a.prepare(nil)
@@ -15,7 +13,8 @@ func main() {
 	s.prepare(r)
 	s.execute()
 	r, _ = s.export()
-	for _, f := range r {
-		fmt.Println(f)
+
+	if err := exportFns(r); err != nil {
+		panic(err)
 	}
 }

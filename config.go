@@ -7,6 +7,7 @@ package main
 
 var (
 	csvFile = "./data/s22.csv"
+	outFile = "./data/out.csv"
 )
 
 type st string

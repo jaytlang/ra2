@@ -80,6 +80,36 @@ func (t *stats) rptTutEnrollment() {
 	fmt.Printf("Total tutorial enrollment: %d\n", total)
 }
 
+func (t *stats) rptRecEnrollment() {
+	recs := map[*section]int{}
+
+	for _, fn := range t.l {
+		rec := fn.rsec
+		if _, ok := recs[rec]; !ok {
+			recs[rec] = 1
+		} else {
+			recs[rec] += 1
+		}
+	}
+
+	fmt.Printf("Recitation enrollment:\n")
+	total := 0
+	for rec, count := range recs {
+		fmt.Printf("\t%s %s: %d\n", rec.instructor, rec.time, count)
+		total += count
+	}
+
+	fmt.Printf("Total enrollment by time:\n")
+	enrollmentByTime := map[st]int{}
+	for _, fn := range t.l {
+		enrollmentByTime[fn.rsec.time]++
+	}
+	for t, count := range enrollmentByTime {
+		fmt.Printf("\t%s: %d\n", t, count)
+	}
+
+}
+
 func (t *stats) rptSPerT() {
 	tuts := map[*section]bool{}
 
@@ -103,8 +133,11 @@ func (t *stats) execute() error {
 	t.rptPctBestRec()
 	t.rptPctPrefRec()
 	t.rptPctBestTut()
+
 	t.rptSPerT()
 	t.rptTutEnrollment()
+	t.rptRecEnrollment()
+
 	return nil
 }
 

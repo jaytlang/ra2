@@ -57,15 +57,21 @@ func (a *afg) prepFg() error {
 
 	}
 
+	tutSize := len(a.sfns)/len(a.tfns) + allowedTutOvf
+	// if there are n people per tutorial, there are 2 recitations
+	// that feed that tutorial. not sure if this is actually why
+	// this works but it does so i'll take it. you could probably
+	// sit down and prove it but this helps balancing.
+	rtSize := tutSize/2 + 1
+
 	for _, rtfn := range a.rtfns {
 		for _, tfn := range a.tfns {
 			if rtfn.tsec == tfn.tsec {
-				a.fg.addCost(rtfn, tfn, int(^uint(0)>>1))
+				a.fg.addCost(rtfn, tfn, rtSize)
 			}
 		}
 	}
 
-	tutSize := len(a.sfns)/len(a.tfns) + allowedTutOvf
 	for _, tfn := range a.tfns {
 		a.fg.addCost(tfn, a.sinkfn, tutSize)
 	}

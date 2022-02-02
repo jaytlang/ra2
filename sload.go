@@ -33,20 +33,16 @@ func importSfns() ([]*fn, error) {
 		e2dpfavs[s.email] = []string{csvlDpFav1(line), csvlDpFav2(line)}
 	}
 
-	ret := make([]*student, 0)
+	fns := make([]*fn, 0)
 
 	for _, s := range e2s {
 		s.addPrefs(e2s, e2dpfavs)
-		ret = append(ret, s)
+		fns = append(fns, &fn{
+			t:  kid,
+			st: s,
+		})
 	}
 
-	fns := make([]*fn, len(ret))
-	for i, ts := range ret {
-		fns[i] = &fn{
-			t:  kid,
-			st: ts,
-		}
-	}
 	return fns, nil
 }
 

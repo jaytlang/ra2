@@ -64,7 +64,7 @@ func makeStudentFns() ([]*fn, error) {
 
 func makeTutFns() ([]*fn, error) {
 	fns := make([]*fn, 0)
-	for _, tb := range tbs {
+	for _, tb := range ats {
 		fns = append(fns, &fn{
 			t:    tutorial,
 			tsec: tb,
@@ -81,8 +81,8 @@ func makeRTUFns() ([]*fn, error) {
 	for _, rt := range lrts {
 		fns = append(fns, &fn{
 			t:    rtunion,
-			rsec: rbs[rt[0]],
-			tsec: tbs[rt[1]],
+			rsec: ars[rt[0]],
+			tsec: ats[rt[1]],
 		})
 	}
 

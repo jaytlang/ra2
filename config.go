@@ -5,6 +5,8 @@ package main
 // TODO: make super cool spreadsheet go getter with google apis
 // it's late, aint nobody got time for that
 
+var strategies = []strategy{&afg{}, &asbp{}}
+
 var (
 	csvFile = "./data/s22.csv"
 	outFile = "./data/out.csv"
@@ -25,7 +27,7 @@ const (
 
 const allowedTutOvf = 1
 
-var rbs = map[int]*section{
+var ars = map[int]*section{
 	1:  {isTutorial: false, time: tr1011, instructor: "Karen Sollins"},
 	2:  {isTutorial: false, time: tr1011, instructor: "Howard Shrobe"},
 	3:  {isTutorial: false, time: tr1011, instructor: "Henry Corrigan-Gibbs"},
@@ -44,7 +46,7 @@ var rbs = map[int]*section{
 	16: {isTutorial: false, time: tr121, instructor: "Mohammad Alizadeh"},
 }
 
-var tbs = map[int]*section{
+var ats = map[int]*section{
 	2:  {isTutorial: true, time: f12, instructor: "Laura McKee"},
 	3:  {isTutorial: true, time: f12, instructor: "Amy Carleton"},
 	4:  {isTutorial: true, time: f23, instructor: "Keith Clavin"},

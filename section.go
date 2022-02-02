@@ -19,9 +19,9 @@ func (sec section) String() string {
 /* MARK: section-related utilities */
 
 func findSectNs(inst string, rec bool) []int {
-	m := tbs
+	m := ats
 	if rec {
-		m = rbs
+		m = ars
 	}
 
 	sns := []int{}

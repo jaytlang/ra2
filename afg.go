@@ -42,21 +42,15 @@ func (a *afg) prepFns() error {
 func (a *afg) prepFg() error {
 	a.fg = newFg()
 
-	i := 0
 	for _, sfn := range a.sfns {
-		i++
 		a.fg.addEdge(a.srcfn, sfn, 1)
 	}
 
-	fmt.Println("source node edges added: ", i)
-
-	i = 0
 	for _, sfn := range a.sfns {
 		satisfiable := false
 		for _, rtfn := range a.rtfns {
 			if sfn.st.open(rtfn.rsec.time) && sfn.st.open(rtfn.tsec.time) {
 				satisfiable = true
-				i++
 				a.fg.addEdge(sfn, rtfn, 1)
 			}
 		}
@@ -66,27 +60,18 @@ func (a *afg) prepFg() error {
 		}
 	}
 
-	fmt.Println("rtunion node edges added: ", i)
-
-	i = 0
 	for _, rtfn := range a.rtfns {
 		for _, tfn := range a.tfns {
 			if rtfn.tsec == tfn.tsec {
-				i++
 				a.fg.addEdge(rtfn, tfn, int(^uint(0)>>1))
 			}
 		}
 	}
-	fmt.Println("tutorial node edges added: ", i)
 
-	i = 0
 	tutSize := len(a.sfns)/len(a.tfns) + 3
 	for _, tfn := range a.tfns {
 		a.fg.addEdge(tfn, a.sinkfn, tutSize)
-		i++
 	}
-
-	fmt.Println("sink edges added: ", i)
 
 	return nil
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"fmt"
 	"os"
+	"sort"
 )
 
 type student struct {
@@ -84,7 +85,18 @@ func newStudentsAll() ([]*student, error) {
 	}
 
 	ret := make([]*student, 0)
-	for _, s := range e2s {
+
+	l := make([]string, len(e2s))
+	i := 0
+	for e := range e2s {
+		l[i] = e
+		i++
+	}
+
+	sort.Strings(l)
+
+	for _, e := range l {
+		s := e2s[e]
 		s.addPrefs(e2s, e2dpfavs)
 		ret = append(ret, s)
 	}

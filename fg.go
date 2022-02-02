@@ -81,10 +81,14 @@ func (g *fg) findPF(s, e node, t pt) ([]node, int) {
 
 	for !q.empty() {
 		ns, f := q.pop()
-		n := ns[0]
+		n := ns[len(ns)-1]
 
 		if n == e {
-			return ns, f
+			rns := make([]node, len(ns))
+			for i, n := range ns {
+				rns[len(ns)-1-i] = n
+			}
+			return rns, f
 		}
 
 		for _, adj := range g.adjacency[n] {
@@ -96,7 +100,7 @@ func (g *fg) findPF(s, e node, t pt) ([]node, int) {
 				cf = g.capacity[n][adj]
 			}
 
-			nxtns := append([]node{adj}, ns...)
+			nxtns := append(ns, adj)
 			if cf > 0 {
 				if f < cf {
 					q.push(nxtns, f)

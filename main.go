@@ -1,7 +1,17 @@
 package main
 
-import "fmt"
-
 func main() {
-	fmt.Println("Hello, world!")
+	a := afg{}
+	a.prepare(nil)
+	err := a.execute()
+	if err != nil {
+		panic(err)
+	}
+
+	r, _ := a.export()
+
+	s := asbp{}
+	s.prepare(r)
+	s.execute()
+	s.export()
 }

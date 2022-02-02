@@ -22,7 +22,7 @@ const (
 	f23 st = "F 2-3pm ET"
 )
 
-const allowedTutOvf = 3
+const allowedTutOvf = 1
 
 var rbs = map[int]*section{
 	1:  {isTutorial: false, time: tr1011, instructor: "Karen Sollins"},
@@ -64,7 +64,7 @@ var tbs = map[int]*section{
 
 var r2t = map[string][]string{
 	"Karen Sollins":        {"Brianna Williams"},
-	"Howie Shrobe":         {"Elizabeth Stevens"},
+	"Howard Shrobe":        {"Elizabeth Stevens"},
 	"Henry Corrigan-Gibbs": {"Amy Carleton"},
 	"Mohammad Alizadeh":    {"Laura McKee", "Keith Clavin"},
 	"Larry Rudolph":        {"Thomas Pickering"},

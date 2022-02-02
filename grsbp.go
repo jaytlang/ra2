@@ -5,20 +5,23 @@ package main
 // this works at all first.
 
 type sbp struct {
-	adjacency map[node][]node
+	adjacency map[*fn][]*fn
+	perfects  int
+	pairs     int
+	loners    int
 }
 
 func newSbp() *sbp {
 	return &sbp{
-		adjacency: make(map[node][]node),
+		adjacency: make(map[*fn][]*fn),
 	}
 }
 
-func (s *sbp) addNode(n node) {
-	s.adjacency[n] = make([]node, 0)
+func (s *sbp) addNode(n *fn) {
+	s.adjacency[n] = make([]*fn, 0)
 }
 
-func (s *sbp) addPref(from, to node) {
+func (s *sbp) addPref(from, to *fn) {
 	if _, ok := s.adjacency[from]; !ok {
 		s.addNode(from)
 	}
@@ -28,7 +31,7 @@ func (s *sbp) addPref(from, to node) {
 	s.adjacency[from] = append(s.adjacency[from], to)
 }
 
-func (s *sbp) claim(n node) {
+func (s *sbp) claim(n *fn) {
 	for _, n2 := range s.adjacency[n] {
 		for i, el := range s.adjacency[n2] {
 			if el == n {
@@ -41,7 +44,7 @@ func (s *sbp) claim(n node) {
 	delete(s.adjacency, n)
 }
 
-func (s *sbp) compatible(a, b node) bool {
+func (s *sbp) compatible(a, b *fn) bool {
 	w1 := false
 	w2 := false
 
@@ -61,11 +64,11 @@ func (s *sbp) compatible(a, b node) bool {
 	return w1 && w2
 }
 
-func (s *sbp) matchThrees() map[node][]node {
-	m := make(map[node][]node)
+func (s *sbp) matchThrees() map[*fn][]*fn {
+	m := make(map[*fn][]*fn)
 	a := s.adjacency
 
-	claimed := make(map[node]bool)
+	claimed := make(map[*fn]bool)
 
 	for i := range a {
 		for j := range a {
@@ -75,12 +78,13 @@ func (s *sbp) matchThrees() map[node][]node {
 				}
 				if s.compatible(i, j) && s.compatible(i, k) && s.compatible(j, k) {
 					if !claimed[i] && !claimed[j] && !claimed[k] {
-						m[i] = []node{j, k}
-						m[j] = []node{i, k}
-						m[k] = []node{i, j}
+						m[i] = []*fn{j, k}
+						m[j] = []*fn{i, k}
+						m[k] = []*fn{i, j}
 						claimed[i] = true
 						claimed[j] = true
 						claimed[k] = true
+						s.perfects += 3
 					}
 				}
 			}
@@ -94,8 +98,8 @@ func (s *sbp) matchThrees() map[node][]node {
 	return m
 }
 
-func (s *sbp) getAllPairs() [][]node {
-	pairs := make([][]node, 0)
+func (s *sbp) getAllPairs() [][]*fn {
+	pairs := make([][]*fn, 0)
 	a := s.adjacency
 
 	for i := range a {
@@ -103,7 +107,7 @@ func (s *sbp) getAllPairs() [][]node {
 			if i == j {
 				continue
 			} else if s.compatible(i, j) {
-				pairs = append(pairs, []node{i, j})
+				pairs = append(pairs, []*fn{i, j})
 			}
 		}
 	}
@@ -111,8 +115,8 @@ func (s *sbp) getAllPairs() [][]node {
 	return pairs
 }
 
-func (s *sbp) getAllRemaining() []node {
-	l := make([]node, 0)
+func (s *sbp) getAllRemaining() []*fn {
+	l := make([]*fn, 0)
 
 	for i := range s.adjacency {
 		l = append(l, i)
@@ -120,8 +124,8 @@ func (s *sbp) getAllRemaining() []node {
 	return l
 }
 
-func (s *sbp) matchPairsAndLoners() map[node][]node {
-	m := make(map[node][]node)
+func (s *sbp) matchPairsAndLoners() map[*fn][]*fn {
+	m := make(map[*fn][]*fn)
 
 	for {
 		p := s.getAllPairs()
@@ -144,14 +148,16 @@ func (s *sbp) matchPairsAndLoners() map[node][]node {
 		cl := l[0]
 		s.claim(cl)
 
-		m[cp[0]] = []node{cp[1], cl}
-		m[cp[1]] = []node{cp[0], cl}
-		m[cl] = []node{cp[0], cp[1]}
+		m[cp[0]] = []*fn{cp[1], cl}
+		m[cp[1]] = []*fn{cp[0], cl}
+		m[cl] = []*fn{cp[0], cp[1]}
+		s.pairs += 2
+		s.loners += 1
 	}
 }
 
-func (s *sbp) matchLonerOnlyTeams() map[node][]node {
-	m := make(map[node][]node)
+func (s *sbp) matchLonerOnlyTeams() map[*fn][]*fn {
+	m := make(map[*fn][]*fn)
 
 	for {
 		l := s.getAllRemaining()
@@ -163,21 +169,24 @@ func (s *sbp) matchLonerOnlyTeams() map[node][]node {
 		s.claim(cl[0])
 		s.claim(cl[1])
 		s.claim(cl[2])
+		s.loners += 3
 
-		m[cl[0]] = []node{cl[1], cl[2]}
-		m[cl[1]] = []node{cl[0], cl[2]}
-		m[cl[2]] = []node{cl[0], cl[1]}
+		m[cl[0]] = []*fn{cl[1], cl[2]}
+		m[cl[1]] = []*fn{cl[0], cl[2]}
+		m[cl[2]] = []*fn{cl[0], cl[1]}
 	}
 
 	return m
 }
 
-func (s *sbp) augmentMatching(m *map[node][]node, maxSz int) {
+func (s *sbp) augmentMatching(m *map[*fn][]*fn, maxSz int) {
 	l := s.getAllRemaining()
 	for _, n := range l {
 		for t1, tr := range *m {
 			if len(tr) <= (maxSz - 1) {
 				s.claim(n)
+				s.loners += 1
+
 				(*m)[n] = append(tr, t1)
 				(*m)[t1] = append(tr, n)
 				for _, t2 := range tr {
@@ -190,7 +199,7 @@ func (s *sbp) augmentMatching(m *map[node][]node, maxSz int) {
 
 }
 
-func (s *sbp) greedyMatching() map[node][]node {
+func (s *sbp) greedyMatching() map[*fn][]*fn {
 	m := s.matchThrees()
 	for k, v := range s.matchPairsAndLoners() {
 		m[k] = v

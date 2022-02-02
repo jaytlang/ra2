@@ -21,15 +21,20 @@ type fn struct {
 func (f fn) String() string {
 	switch f.t {
 	case kid:
-		return f.st.String()
+		s := f.st.String()
+		if f.rsec != nil {
+			s += "Assigned to " + f.rsec.String()
+			s += "Assigned to " + f.tsec.String()
+		}
+		return s
 	case rtunion:
-		return fmt.Sprintf("Union of:\n\t%s\n\t%s\n", f.rsec.String(), f.tsec.String())
+		return fmt.Sprintf("Union of:\n\t%s\t%s\n", f.rsec.String(), f.tsec.String())
 	case tutorial:
 		return f.tsec.String()
 	case src:
-		return "Source"
+		return "Source\n"
 	default:
-		return "Sink"
+		return "Sink\n"
 	}
 }
 

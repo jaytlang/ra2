@@ -1,138 +1,60 @@
 package main
 
-/* MARK: Queueing for BFS */
-
-type q struct {
-	nodePaths [][]node
-	flows     []int
-}
-
-func newQ() *q {
-	nq := q{
-		nodePaths: make([][]node, 0),
-		flows:     make([]int, 0),
-	}
-	return &nq
-}
-
-func (q *q) push(ns []node, f int) {
-	q.nodePaths = append(q.nodePaths, ns)
-	q.flows = append(q.flows, f)
-}
-
-func (q *q) pop() ([]node, int) {
-	ns := q.nodePaths[0]
-	f := q.flows[0]
-	q.nodePaths = q.nodePaths[1:]
-	q.flows = q.flows[1:]
-	return ns, f
-}
-
-func (q *q) empty() bool {
-	return len(q.nodePaths) == 0
-}
-
-/* MARK: Flow Graph */
+import "github.com/yourbasic/graph"
 
 type fg struct {
-	ogCapacity map[node]map[node]int
-	capacity   map[node]map[node]int
-	adjacency  map[node][]node
+	tl map[*fn]int
+	g  *graph.Mutable
+	rg *graph.Mutable
 }
 
-func newFg() *fg {
-	g := fg{
-		ogCapacity: make(map[node]map[node]int),
-		capacity:   make(map[node]map[node]int),
-		adjacency:  make(map[node][]node),
+type fgr struct {
+	tl   map[*fn]int
+	flow int
+	fg   graph.Iterator
+}
+
+/* MARK: flow graphs */
+
+func newFg(fns []*fn) *fg {
+	f := fg{
+		tl: make(map[*fn]int),
+		g:  graph.New(len(fns)),
 	}
-	return &g
-}
 
-func (g *fg) addNode(n node) {
-	g.ogCapacity[n] = make(map[node]int)
-	g.capacity[n] = make(map[node]int)
-	g.adjacency[n] = make([]node, 0)
-}
-
-func (g *fg) addEdge(from, to node, cap int) {
-	if _, ok := g.capacity[from]; !ok {
-		g.addNode(from)
+	for i, fn := range fns {
+		f.tl[fn] = i
 	}
-	if _, ok := g.capacity[to]; !ok {
-		g.addNode(to)
-	}
-	g.ogCapacity[from][to] = cap
-	g.capacity[from][to] = cap
-	g.adjacency[from] = append(g.adjacency[from], to)
+
+	return &f
 }
 
-type pt int
+func (f *fg) addBothCost(fn1, fn2 *fn, cost int) {
+	f.g.AddBothCost(f.tl[fn1], f.tl[fn2], int64(cost))
+}
 
-const (
-	resid pt = iota
-	flow
-)
+func (f *fg) runMaxFlow(s, e *fn) *fgr {
+	flow, nfg := graph.MaxFlow(f.g, f.tl[s], f.tl[e])
+	r := fgr{
+		tl:   f.tl,
+		flow: int(flow),
+		fg:   nfg,
+	}
 
-// node path is returned in reverse order
-func (g *fg) findPF(s, e node, t pt) ([]node, int) {
-	q := newQ()
-	q.push([]node{s}, int(^uint(0)>>1))
+	return &r
+}
 
-	for !q.empty() {
-		ns, f := q.pop()
-		n := ns[len(ns)-1]
-
-		if n == e {
-			rns := make([]node, len(ns))
-			for i, n := range ns {
-				rns[len(ns)-1-i] = n
-			}
-			return rns, f
+/* MARK: flow graph results */
+func (f *fgr) flowAlong(s, e *fn) int {
+	target := f.tl[e]
+	res := 0
+	f.fg.Visit(f.tl[s], func(t int, c int64) bool {
+		if t == target {
+			res = int(c)
+			return true
 		}
+		return true
+	})
 
-		for _, adj := range g.adjacency[n] {
-			var cf int
-
-			if t == flow {
-				cf = g.ogCapacity[n][adj] - g.capacity[n][adj]
-			} else {
-				cf = g.capacity[n][adj]
-			}
-
-			nxtns := append(ns, adj)
-			if cf > 0 {
-				if f < cf {
-					q.push(nxtns, f)
-				} else {
-					q.push(nxtns, cf)
-				}
-			}
-		}
-	}
-
-	return make([]node, 0), 0
-}
-
-func (g *fg) maximize(src, sink node) int {
-	total := 0
-
-	for {
-		rvp, f := g.findPF(src, sink, resid)
-		if f <= 0 {
-			break
-		}
-		total += f
-		n := sink
-		for n != src {
-			pn := rvp[0]
-			rvp = rvp[1:]
-
-			g.capacity[pn][n] -= f
-			g.capacity[n][pn] += f
-			n = pn
-		}
-	}
-
-	return total
+	return res
 }

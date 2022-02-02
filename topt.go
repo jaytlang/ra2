@@ -69,6 +69,9 @@ func (t *topt) execute() error {
 	for _, fn := range t.l {
 		swpd[fn] = true
 		for i, tm := range fn.team {
+			if i >= len(fn.team) {
+				continue
+			}
 			tm = fn.team[i]
 
 			if !t.mfvd(fn.st, tm.st) {

@@ -100,28 +100,12 @@ func (a *afg) execute() error {
 }
 
 func (a *afg) export() ([]*fn, error) {
-	gotrbest := 0
-	gotrfos := 0
-	gott := 0
-
 	for _, sfn := range a.sfns {
 		for _, rtfn := range a.rtfns {
 			f := a.res.flowAlong(sfn, rtfn)
 			if f > 0 {
 				sfn.rsec = rtfn.rsec
-				for i, favrsec := range sfn.st.rp {
-					if favrsec == rtfn.rsec.time {
-						if i == 0 {
-							gotrbest++
-						}
-						gotrfos++
-						break
-					}
-				}
 				sfn.tsec = rtfn.tsec
-				if sfn.tsec.time == sfn.st.tp {
-					gott++
-				}
 				break
 			}
 		}

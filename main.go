@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 func main() {
 	a := afg{}
 	a.prepare(nil)
@@ -9,6 +11,9 @@ func main() {
 	}
 
 	r, _ := a.export()
+	for _, sfn := range r {
+		fmt.Println(sfn)
+	}
 
 	s := asbp{}
 	s.prepare(r)

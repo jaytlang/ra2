@@ -5,7 +5,6 @@ import "github.com/yourbasic/graph"
 type fg struct {
 	tl map[*fn]int
 	g  *graph.Mutable
-	rg *graph.Mutable
 }
 
 type fgr struct {

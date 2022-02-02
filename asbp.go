@@ -1,7 +1,5 @@
 package main
 
-import "fmt"
-
 type asbp struct {
 	t2sbp map[*section]*sbp
 	res   map[*fn][]*fn
@@ -44,17 +42,5 @@ func (s *asbp) execute() error {
 }
 
 func (s *asbp) export() ([]*fn, error) {
-	tm4 := 0
-	tm5 := 0
-	for _, tm := range s.res {
-		if len(tm) == 3 {
-			tm4++
-		} else if len(tm) == 4 {
-			tm5++
-		}
-	}
-
-	fmt.Println("tm4: ", tm4/4)
-	fmt.Println("tm5: ", tm5)
 	return nil, nil
 }

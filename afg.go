@@ -70,7 +70,6 @@ func (a *afg) prepFg() error {
 	}
 
 	tutSize := len(a.sfns)/len(a.tfns) + allowedTutOvf
-	fmt.Println("ideal tutorial size", tutSize)
 	for _, tfn := range a.tfns {
 		a.fg.addBothCost(tfn, a.sinkfn, tutSize)
 	}
@@ -128,14 +127,5 @@ func (a *afg) export() ([]*fn, error) {
 		}
 	}
 
-	for _, tfn := range a.tfns {
-		f := a.res.flowAlong(tfn, a.sinkfn)
-		fmt.Printf("tfn: %s, flow: %d\n", tfn.tsec, f)
-	}
-
-	total := len(a.sfns)
-	fmt.Println("Ideal recitation fraction: ", float64(gotrbest)/float64(total))
-	fmt.Println("Top two recitation fraction: ", float64(gotrfos)/float64(total))
-	fmt.Println("Ideal tutorial fraction: ", float64(gott)/float64(total))
 	return a.sfns, nil
 }

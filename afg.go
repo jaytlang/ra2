@@ -106,7 +106,6 @@ func (a *afg) prepare() error {
 }
 
 func (a *afg) execute() error {
-	fmt.Println("NUMBER OF STUDENTS: ", len(a.sfns))
 	flow := a.fg.maximize(a.srcfn, a.sinkfn)
 	fmt.Println("FLOW: ", flow)
 	return nil

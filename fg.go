@@ -3,33 +3,33 @@ package main
 /* MARK: Queueing for BFS */
 
 type q struct {
-	nodes []node
-	flows []int
+	nodePaths [][]node
+	flows     []int
 }
 
 func newQ() *q {
 	nq := q{
-		nodes: make([]node, 0),
-		flows: make([]int, 0),
+		nodePaths: make([][]node, 0),
+		flows:     make([]int, 0),
 	}
 	return &nq
 }
 
-func (q *q) push(n node, f int) {
-	q.nodes = append(q.nodes, n)
+func (q *q) push(ns []node, f int) {
+	q.nodePaths = append(q.nodePaths, ns)
 	q.flows = append(q.flows, f)
 }
 
-func (q *q) pop() (node, int) {
-	n := q.nodes[0]
+func (q *q) pop() ([]node, int) {
+	ns := q.nodePaths[0]
 	f := q.flows[0]
-	q.nodes = q.nodes[1:]
+	q.nodePaths = q.nodePaths[1:]
 	q.flows = q.flows[1:]
-	return n, f
+	return ns, f
 }
 
 func (q *q) empty() bool {
-	return len(q.nodes) == 0
+	return len(q.nodePaths) == 0
 }
 
 /* MARK: Flow Graph */
@@ -77,20 +77,14 @@ const (
 // node path is returned in reverse order
 func (g *fg) findPF(s, e node, t pt) ([]node, int) {
 	q := newQ()
-	q.push(s, int(^uint(0)>>1))
-
-	ancestry := make(map[node]node)
+	q.push([]node{s}, int(^uint(0)>>1))
 
 	for !q.empty() {
-		n, f := q.pop()
+		ns, f := q.pop()
+		n := ns[0]
 
 		if n == e {
-			e2s := make([]node, 0)
-			for n := e; n != s; n = ancestry[n] {
-				e2s = append(e2s, n)
-			}
-
-			return append(e2s, s), f
+			return ns, f
 		}
 
 		for _, adj := range g.adjacency[n] {
@@ -102,14 +96,12 @@ func (g *fg) findPF(s, e node, t pt) ([]node, int) {
 				cf = g.capacity[n][adj]
 			}
 
+			nxtns := append([]node{adj}, ns...)
 			if cf > 0 {
-				if _, ok := ancestry[adj]; !ok {
-					ancestry[adj] = n
-					if f < cf {
-						q.push(adj, f)
-					} else {
-						q.push(adj, cf)
-					}
+				if f < cf {
+					q.push(nxtns, f)
+				} else {
+					q.push(nxtns, cf)
 				}
 			}
 		}

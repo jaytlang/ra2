@@ -23,6 +23,7 @@ func (s student) String() string {
 	for _, dpfav := range s.dpfavs {
 		str += fmt.Sprintf("\n\t\t%s, ", dpfav.email)
 	}
+	str += "\n"
 	return str
 }
 

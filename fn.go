@@ -16,6 +16,7 @@ type fn struct {
 	st   *student
 	rsec *section
 	tsec *section
+	team []*student
 }
 
 func (f fn) String() string {
@@ -25,6 +26,13 @@ func (f fn) String() string {
 		if f.rsec != nil {
 			s += "Assigned to " + f.rsec.String()
 			s += "Assigned to " + f.tsec.String()
+		}
+		if f.team != nil {
+			s += "Team:"
+			for _, teammate := range f.team {
+				s += " " + teammate.email
+			}
+			s += "\n"
 		}
 		return s
 	case rtunion:

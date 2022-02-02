@@ -42,5 +42,12 @@ func (s *asbp) execute() error {
 }
 
 func (s *asbp) export() ([]*fn, error) {
-	return nil, nil
+	res := []*fn{}
+	for s, t := range s.res {
+		for _, os := range t {
+			s.team = append(s.team, os.st)
+		}
+		res = append(res, s)
+	}
+	return res, nil
 }

@@ -3,6 +3,8 @@ package main
 import "strings"
 
 // CSV file format: invariant
+// Note that if your form is different,
+// you probably have to edit this stuff.
 const (
 	timestamp = iota
 	email

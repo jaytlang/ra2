@@ -8,8 +8,9 @@ package main
 var strategies = []strategy{&afg{}, &asbp{}, &topt{}, &stats{}}
 
 var (
-	csvFile = "./data/s22.csv"
-	outFile = "./data/out.csv"
+	csvFile  = "./data/s22.csv"
+	outFile  = "./data/out.csv"
+	statFile = "./data/stats.txt"
 )
 
 type st string

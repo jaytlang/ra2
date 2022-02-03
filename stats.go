@@ -1,9 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"os"
+)
 
 type stats struct {
 	l []*fn
+	f *os.File
 }
 
 type percent struct {
@@ -23,7 +27,7 @@ func (t *stats) rptPctAssigned() {
 		}
 	}
 
-	fmt.Printf("Percent of students assigned to a fitting section: %s\n", percent{total, len(t.l)})
+	fmt.Fprintf(t.f, "Percent of students assigned to a fitting section: %s\n", percent{total, len(t.l)})
 }
 
 func (t *stats) rptPctBestRec() {
@@ -34,7 +38,7 @@ func (t *stats) rptPctBestRec() {
 		}
 	}
 
-	fmt.Printf("Percent of students assigned to first choice recitation: %s\n", percent{total, len(t.l)})
+	fmt.Fprintf(t.f, "Percent of students assigned to first choice recitation: %s\n", percent{total, len(t.l)})
 }
 
 func (t *stats) rptPctPrefRec() {
@@ -45,7 +49,7 @@ func (t *stats) rptPctPrefRec() {
 		}
 	}
 
-	fmt.Printf("Percent of students assigned to first or second choice recitation: %s\n", percent{total, len(t.l)})
+	fmt.Fprintf(t.f, "Percent of students assigned to first or second choice recitation: %s\n", percent{total, len(t.l)})
 }
 
 func (t *stats) rptPctBestTut() {
@@ -56,7 +60,7 @@ func (t *stats) rptPctBestTut() {
 		}
 	}
 
-	fmt.Printf("Percent of students assigned to first choice tutorial: %s\n", percent{total, len(t.l)})
+	fmt.Fprintf(t.f, "Percent of students assigned to first choice tutorial: %s\n", percent{total, len(t.l)})
 }
 
 func (t *stats) rptTutEnrollment() {
@@ -71,10 +75,10 @@ func (t *stats) rptTutEnrollment() {
 		}
 	}
 
-	fmt.Printf("Tutorial enrollment:\n")
+	fmt.Fprintf(t.f, "Tutorial enrollment:\n")
 	total := 0
 	for tut, count := range tuts {
-		fmt.Printf("\t%s %s: %d\n", tut.instructor, tut.time, count)
+		fmt.Fprintf(t.f, "\t%s %s: %d\n", tut.instructor, tut.time, count)
 		total += count
 	}
 }
@@ -91,20 +95,20 @@ func (t *stats) rptRecEnrollment() {
 		}
 	}
 
-	fmt.Printf("Recitation enrollment:\n")
+	fmt.Fprintf(t.f, "Recitation enrollment:\n")
 	total := 0
 	for rec, count := range recs {
-		fmt.Printf("\t%s %s: %d\n", rec.instructor, rec.time, count)
+		fmt.Fprintf(t.f, "\t%s %s: %d\n", rec.instructor, rec.time, count)
 		total += count
 	}
 
-	fmt.Printf("Total recitation enrollment by time:\n")
+	fmt.Fprintf(t.f, "Total recitation enrollment by time:\n")
 	enrollmentByTime := map[st]int{}
 	for _, fn := range t.l {
 		enrollmentByTime[fn.rsec.time]++
 	}
-	for t, count := range enrollmentByTime {
-		fmt.Printf("\t%s: %d\n", t, count)
+	for tt, count := range enrollmentByTime {
+		fmt.Fprintf(t.f, "\t%s: %d\n", tt, count)
 	}
 
 }
@@ -119,7 +123,7 @@ func (t *stats) rptSPerT() {
 		}
 	}
 
-	fmt.Printf("Students per tutorial: %d\n", len(t.l)/len(tuts)+allowedTutOvf)
+	fmt.Fprintf(t.f, "Students per tutorial: %d\n", len(t.l)/len(tuts)+allowedTutOvf)
 }
 
 func (t *stats) rptTeamSatisfaction() {
@@ -162,15 +166,15 @@ func (t *stats) rptTeamSatisfaction() {
 		}
 	}
 
-	fmt.Printf("Team preferences (percentages calced only with students who wanted teams):\n")
-	fmt.Printf("\tStudents getting all of their team preferences: %s (%d)\n", percent{perfs, pt}, perfs)
-	fmt.Printf("\tStudents getting one of their two team preferences: %s (%d)\n", percent{pairs, pt}, pairs)
-	fmt.Printf("\tStudents getting none of their team preferences: %s (%d)\n", percent{singles, pt}, singles)
-	fmt.Printf("\t[Students with no team preferences: %d]\n", len(t.l)-pt)
+	fmt.Fprintf(t.f, "Team preferences (percentages calced only with students who wanted teams):\n")
+	fmt.Fprintf(t.f, "\tStudents getting all of their team preferences: %s (%d)\n", percent{perfs, pt}, perfs)
+	fmt.Fprintf(t.f, "\tStudents getting one of their two team preferences: %s (%d)\n", percent{pairs, pt}, pairs)
+	fmt.Fprintf(t.f, "\tStudents getting none of their team preferences: %s (%d)\n", percent{singles, pt}, singles)
+	fmt.Fprintf(t.f, "\t[Students with no team preferences: %d]\n", len(t.l)-pt)
 }
 
 func (t *stats) rptSubmissions() {
-	fmt.Printf("Number of submissions: %d\n", len(t.l))
+	fmt.Fprintf(t.f, "Number of submissions: %d\n", len(t.l))
 }
 
 func (t *stats) rptLargeTeams() {
@@ -188,13 +192,19 @@ func (t *stats) rptLargeTeams() {
 		}
 	}
 
-	fmt.Printf("3-member teams: %d\n", len(lt3)/3)
-	fmt.Printf("4-member teams: %d\n", len(lt4)/4)
-	fmt.Printf("5-member teams: %d\n", len(lt5)/5)
+	fmt.Fprintf(t.f, "3-member teams: %d\n", len(lt3)/3)
+	fmt.Fprintf(t.f, "4-member teams: %d\n", len(lt4)/4)
+	fmt.Fprintf(t.f, "5-member teams: %d\n", len(lt5)/5)
 }
 
 func (t *stats) prepare(l []*fn) error {
 	t.l = l
+	var err error
+
+	t.f, err = os.Create(statFile)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -216,5 +226,6 @@ func (t *stats) execute() error {
 }
 
 func (t *stats) export() ([]*fn, error) {
+	t.f.Close()
 	return t.l, nil
 }
